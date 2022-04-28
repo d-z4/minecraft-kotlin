@@ -1,0 +1,5 @@
+main: phonon.kotlin.KotlinPlugin
+name: kotlin
+version: 1.6.10
+api-version: 1.17
+softdepend: []
