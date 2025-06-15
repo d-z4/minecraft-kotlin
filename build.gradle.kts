@@ -4,26 +4,36 @@
  * This generated file contains a sample Kotlin application project to get you started.
  */
 
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 // plugin versioning
-val VERSION = "1.6.10" // kotlin version
-val JVM = 16         // 1.8 for 8, 11 for 11, 16 for 16
+val VERSION = "2.2.0-RC2" // kotlin version
 
 // base of output jar name, full jar will be "kotlin-runtime-jvm{VERSION}-{MINECRAFT_VERSION}.jar"
 val OUTPUT_JAR_NAME = "kotlin-runtime"
 
-// target will be set by task
-var target = ""
-
 // output jar text that indicates kotlin-reflect included
 var useReflect = ""
 
+tasks.named("distZip") {
+    dependsOn(tasks.named("shadowJar"))
+}
+
+tasks.named("distTar") {
+    dependsOn(tasks.named("shadowJar"))
+}
+
+tasks.named("startScripts") {
+    dependsOn(tasks.named("shadowJar"))
+}
+tasks.named("startShadowScripts") {
+    dependsOn(tasks.named("jar"))
+}
+
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
-    id("org.jetbrains.kotlin.jvm") version "1.6.10"
-    id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("org.jetbrains.kotlin.jvm") version "2.2.0-RC2"
+    id("com.gradleup.shadow") version "8.3.6"
     // maven() // no longer needed in gradle 7
 
     // Apply the application plugin to add support for building a CLI application.
@@ -37,13 +47,13 @@ repositories {
 
     // paper
     maven {
-        url = uri("https://papermc.io/repo/repository/maven-public")
+        url = uri("https://repo.papermc.io/repository/maven-public/")
     }
 }
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(JVM))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
@@ -61,53 +71,28 @@ dependencies {
     compileOnly(platform("org.jetbrains.kotlin:kotlin-bom"))
 
     // Use the Kotlin JDK 8 standard library.
-    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     configurations["resolvableImplementation"]("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    // minecraft version dependent api version
-    if ( project.hasProperty("1.12") === true ) {
-        compileOnly("com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT")
-        target = "1.12"
-    } else if ( project.hasProperty("1.16") === true ) {
-        compileOnly("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
-        target = "1.16"
-    } else if ( project.hasProperty("1.17") === true ) {
-        compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
-        target = "1.17"
-    } else if ( project.hasProperty("1.18") === true ) { // needs jvm 17: TODO add jvm argument
-        compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
-        target = "1.18"
-    }
-    
+    compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
+
     // optionally add kotlin-reflect api
     if ( project.hasProperty("reflect") === true ) {
-        configurations["resolvableImplementation"]("org.jetbrains.kotlin:kotlin-reflect")
+        implementation("org.jetbrains.kotlin:kotlin-reflect")
         useReflect = "-reflect"
     }
-
-    // set source directories based on target directory
-    sourceSets["main"].resources.srcDir("src/mc-${target}/resources")
-    sourceSets["main"].java.srcDir("src/mc-${target}")
 }
 
 application {
     // Define the main class for the application.
-    mainClassName = "phonon.kotlin.KotlinPluginKt"
+    mainClass.set("phonon.kotlin.KotlinPluginKt")
 }
 
 tasks {
     named<ShadowJar>("shadowJar") {
-        // verify valid target minecraft version
-        doFirst {
-            val supportedMinecraftVersions = setOf("1.12", "1.16", "1.17", "1.18")
-            if ( !supportedMinecraftVersions.contains(target) ) {
-                throw Exception("Invalid Minecraft version! Supported versions are: 1.12, 1.16, 1.17 1.18")
-            }
-        }
 
-        classifier = ""
-        configurations = mutableListOf(project.configurations.named("resolvableImplementation").get())
-        
+        archiveClassifier.set("")
+
         // do NOT minimize (want entire kotlin runtime)
         //minimize()
     }
@@ -127,7 +112,7 @@ tasks {
 gradle.taskGraph.whenReady {
     tasks {
         named<ShadowJar>("shadowJar") {
-            baseName = "${OUTPUT_JAR_NAME}${useReflect}-${VERSION}-jvm${JVM}-mc${target}"
+            archiveBaseName.set("${OUTPUT_JAR_NAME}${useReflect}-${VERSION}")
         }
     }
 }
