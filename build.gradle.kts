@@ -33,7 +33,7 @@ tasks.named("startShadowScripts") {
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "2.3.0-Beta2"
-    id("com.gradleup.shadow") version "8.3.6"
+    id("com.gradleup.shadow") version "9.2.2"
     // maven() // no longer needed in gradle 7
 
     // Apply the application plugin to add support for building a CLI application.
