@@ -52,13 +52,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.get_version.outputs.version }}
         run: |
-          JAR=kotlin-runtime-$VERSION
-          JAR_REFLECT=kotlin-runtime-reflect-$VERSION
+          cd build/libs
+          JAR=kotlin-runtime-$VERSION.jar
+          JAR_REFLECT=kotlin-runtime-reflect-$VERSION.jar
           if [ -z "$JAR" ]; then
             echo "No build files found"
             exit 1
           fi
-          echo "Found build files: $JAR"
-          gh release create "v$VERSION" $JAR \
+          echo "Found build files: $JAR $JAR_REFLECT"
+          gh release create "v$VERSION" $JAR $JAR_REFLECT \
             --title "Release v$VERSION" \
             --notes "Automated release for version $VERSION."
