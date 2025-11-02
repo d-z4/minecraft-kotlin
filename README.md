@@ -1,10 +1,10 @@
 # Spigot Minecraft server plugin for kotlin runtime
 
-- kotlin version: 2.2.0-RC2
+- kotlin version: 2.3.0-Beta2
 - jvm target: java 21
-- available minecraft versions: 1.21.5
+- available minecraft versions: 1.21.10
 
-Build for Minecraft 1.21.5
+Build for Minecraft 1.21.10
 ```
 ./gradlew build
 ```

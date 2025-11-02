@@ -7,7 +7,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 // plugin versioning
-val VERSION = "2.2.0-RC2" // kotlin version
+val VERSION = "2.3.0-Beta2" // kotlin version
 
 // base of output jar name, full jar will be "kotlin-runtime-jvm{VERSION}-{MINECRAFT_VERSION}.jar"
 val OUTPUT_JAR_NAME = "kotlin-runtime"
