@@ -74,7 +74,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     configurations["resolvableImplementation"]("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
 
     // optionally add kotlin-reflect api
     if ( project.hasProperty("reflect") === true ) {
